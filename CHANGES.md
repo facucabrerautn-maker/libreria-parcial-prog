@@ -93,7 +93,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
 > Nota: C-01 y C-02 son secuenciales; desde C-02 en adelante se abren ramas paralelas.
 
 ### [C-01] `foundation-setup`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Scaffolding completo del proyecto y encima de despliegue
   - Estructura de directorios obligatoria: `app/main.py`, `app/core/{config.py,database.py}`, `app/modules/{health,editoriales,generos,autores,libros,clientes,ventas}/{models,schemas,service,router}.py`, `test/` (archivos `.http`), `Dockerfile`, `.dockerignore`, `.env.example`, `DEPLOY.md`, `README.md`
   - `app/main.py`: aplicación FastAPI, lifespan (crea motor y fábrica de sesiones en `app.state`, ejecuta `create_all` al arrancar, cierra el motor al apagar), registro de routers
@@ -109,7 +109,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/08_arquitectura_propuesta.md` §Estructura de directorios, §Despliegue
 
 ### [C-02] `core-models`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Capa de persistencia base compartida por todos los módulos
   - Clase base SQLModel con metadata compartida y `SQLModel.metadata.create_all` al arrancar (sin migraciones, D-04)
   - Motor async y fábrica de sesiones reutilizable; dependencia `get_session` para inyección en routers/services
