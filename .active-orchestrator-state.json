@@ -1,0 +1,112 @@
+{
+  "version": 4,
+  "step": "done",
+  "owner": "active-orchestrator",
+  "discovery": {
+    "skipped": true
+  },
+  "kb": {
+    "created_by": "kb-creator",
+    "source": "interactive",
+    "discovery": {
+      "system_type": "api_rest",
+      "domain": "libreria",
+      "scale": "pequeno",
+      "stack": ["python 3.12", "fastapi 0.111", "sqlmodel 0.0.24", "sqlalchemy 2.0 async", "asyncpg", "postgresql 16", "python-dotenv", "uvicorn", "docker python:3.12-alpine"],
+      "needs_infra": true,
+      "problem": "API de librería para catálogo y ventas — Parcial de Programación III (Unidades 1 a 4): fundamentos de FastAPI, contratos y CRUD, ejecución asíncrona sin bloqueos, persistencia relacional con SQLModel y PostgreSQL, y despliegue en imagen Docker sobre VPS."
+    },
+    "files": [
+      "knowledge-base/README.md",
+      "knowledge-base/01_vision_y_objetivos.md",
+      "knowledge-base/02_descripcion_general.md",
+      "knowledge-base/03_actores_y_roles.md",
+      "knowledge-base/04_modelo_de_datos.md",
+      "knowledge-base/05_reglas_de_negocio.md",
+      "knowledge-base/06_funcionalidades.md",
+      "knowledge-base/07_flujos_principales.md",
+      "knowledge-base/08_arquitectura_propuesta.md",
+      "knowledge-base/09_decisiones_y_supuestos.md",
+      "knowledge-base/10_preguntas_abiertas.md"
+    ]
+  },
+  "roadmap": {
+    "created_by": "roadmap-generator",
+    "changes_file": "CHANGES.md"
+  },
+  "skills": {
+    "recommended": [
+      {
+        "name": "fastapi-python",
+        "source": "Mindrally/skills (https://www.skills.sh/mindrally/skills/fastapi-python)",
+        "installs": "14k (+65 this week)",
+        "why": "OpenCode-compatible FastAPI backend guidance: typed routes, Pydantic v2, async operations, modular routers — matches the FastAPI + SQLAlchemy async core stack."
+      },
+      {
+        "name": "fastapi-expert",
+        "source": "jeffallan/claude-skills (https://www.skills.sh/jeffallan/claude-skills/fastapi-expert)",
+        "installs": "6.4K",
+        "why": "Production-grade FastAPI with async Python, Pydantic V2 validation, JWT auth and async DB operations; 12.3K-star source repo."
+      },
+      {
+        "name": "sqlalchemy-postgres",
+        "source": "cfircoo/claude-code-toolkit (https://www.skills.sh/cfircoo/claude-code-toolkit/sqlalchemy-postgres)",
+        "installs": "507",
+        "why": "SQLAlchemy 2.0 async with asyncpg driver, PostgreSQL only, Alembic migrations — exact match to the persistence stack (SQLAlchemy 2.0 async, asyncpg, PostgreSQL 16)."
+      },
+      {
+        "name": "postgresql",
+        "source": "itechmeat/llm-code (https://www.skills.sh/itechmeat/llm-code/postgresql)",
+        "installs": "97",
+        "why": "PostgreSQL best practices: schema design, Alembic migrations, async SQLAlchemy, query optimization — supports the PostgreSQL 16 data layer (under 100 installs, review before use)."
+      },
+      {
+        "name": "production-docker",
+        "source": "vstorm-co/production-stack-skills (https://www.skills.sh/vstorm-co/production-stack-skills/production-docker)",
+        "installs": "n/a",
+        "why": "Production Docker hardening with multi-stage builds and a Python 3.12-slim example — matches python:3.12-alpine and needs_infra=true."
+      },
+      {
+        "name": "docker-deploy",
+        "source": "sagargupta16/claude-skills (https://www.skills.sh/sagargupta16/claude-skills/docker-deploy)",
+        "installs": "n/a",
+        "why": "Docker and deployment patterns with a Python (FastAPI/Flask/Django) template, multi-stage Alpine builds and health checks — matches docker alpine + VPS deploy."
+      },
+      {
+        "name": "vps-deploy",
+        "source": "ClawHub/llcsamih (https://clawhub.ai/llcsamih/skills/vps-deploy)",
+        "installs": "n/a",
+        "why": "Full VPS deployment: SSH hardening, firewall, Docker, Nginx reverse proxy, SSL, health verification — matches despliegue VPS / needs_infra=true."
+      }
+    ],
+    "installed": [
+  {
+    "name": "fastapi-python",
+    "source": "Mindrally/skills",
+    "path": "~\\.agents\\skills\\fastapi-python",
+    "status": "installed"
+  },
+  {
+    "name": "sqlalchemy-postgres",
+    "source": "cfircoo/claude-code-toolkit",
+    "path": "~\\.agents\\skills\\sqlalchemy-postgres",
+    "status": "installed"
+  },
+  {
+    "name": "production-docker",
+    "source": "vstorm-co/production-stack-skills",
+    "path": "~\\.agents\\skills\\production-docker",
+    "status": "installed"
+  }
+]
+  },
+  "registry": {
+    "created_by": "skill-registry",
+    "file": ".atl/skill-registry.md"
+  },
+  "agents": {
+    "created_by": "agent-instruction",
+    "files": ["CLAUDE.md", "AGENTS.md"],
+    "reglas_applied": ["R-01", "R-02", "R-03", "R-04", "R-05", "R-06", "R-07", "R-08", "R-09", "R-10", "R-11", "R-12", "R-13", "R-14", "R-15", "R-16", "R-17", "R-18"]
+  }
+}
