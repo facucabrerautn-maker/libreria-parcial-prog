@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from app.core.config import DATABASE_URL, SQL_ECHO
 from app.core.database import close_db, init_db
+from app.modules.health.router import router as health_router
 
 
 @asynccontextmanager
@@ -19,6 +20,8 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+app.include_router(health_router)
 
 
 @app.get("/")

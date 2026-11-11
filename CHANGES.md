@@ -129,7 +129,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
 > Los cambios C-03, C-04, C-05, C-06 y C-08 se desbloquean juntos al terminar C-02 y pueden ir en paralelo.
 
 ### [C-03] `health-checks`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Endpoints de salud del módulo `health`
   - `GET /health/live` → `{"estado": "vivo"}` sin tocar la base (200)
   - `GET /health/ready` → ejecuta `SELECT 1` contra PostgreSQL; 200 si responde, 503 si no
