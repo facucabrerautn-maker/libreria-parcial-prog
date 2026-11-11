@@ -182,7 +182,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/05_reglas_de_negocio.md` (RN-10)
 
 ### [C-07] `libros-con-autores`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Libros con asociación muchos-a-muchos con datos (autores)
   - Modelo `Libro` (`isbn` UNIQUE, `precio` NUMERIC(10,2) CHECK > 0, `stock` CHECK >= 0, `editorial_id` FK, `genero_id` FK nulo permitido) y `LibroAutor` (PK `libro_id`+`autor_id`, `orden` CHECK >= 1, `rol` CHECK en (autor, coautor, traductor, ilustrador))
   - `POST /libros/` con lista de autores anidados (201; 409 si alguna FK es inválida, sin consulta previa de existencia)
