@@ -97,6 +97,12 @@
     "source": "vstorm-co/production-stack-skills",
     "path": "~\\.agents\\skills\\production-docker",
     "status": "installed"
+  },
+  {
+    "name": "vps-deploy",
+    "source": "bartek-filipiuk/vps-deploy-skill",
+    "path": "~\\.agents\\skills\\vps-deploy",
+    "status": "installed"
   }
 ]
   },
