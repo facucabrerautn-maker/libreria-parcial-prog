@@ -169,7 +169,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/05_reglas_de_negocio.md` (RN-10, RN-12)
 
 ### [C-06] `autores-crud`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: CRUD de autores
   - Modelo `Autor` (`id`, `nombre`, `nacionalidad`)
   - `GET, POST, PATCH /autores/` y `/autores/{id}` (201/200/404/409/422, `exclude_unset` en PATCH)
