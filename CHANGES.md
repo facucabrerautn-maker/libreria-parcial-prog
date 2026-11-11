@@ -236,7 +236,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
 ## FASE 3 — Pruebas, Despliegue y Operación
 
 ### [C-10] `tests-e2e-http`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Casos de prueba en archivos `.http` bajo `test/`
   - Cobertura de todos los endpoints: health, editoriales, generos, autores, libros, clientes, ventas
   - Códigos HTTP: 201 al crear, 404, 409 (email/nombre duplicado, FK inválida, perfil ya existente), 422 (validación de DTO, venta sin renglones, libro repetido en venta)

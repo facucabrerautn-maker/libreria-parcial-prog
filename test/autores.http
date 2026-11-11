@@ -1,0 +1,22 @@
+### Crear autor (201)
+POST http://localhost:8000/autores/
+Content-Type: application/json
+
+{
+  "nombre": "Julio Cortázar",
+  "nacionalidad": "Argentina"
+}
+
+### Listar autores (paginado)
+GET http://localhost:8000/autores/?limit=10&offset=0
+
+### Obtener autor por id
+GET http://localhost:8000/autores/1
+
+### Actualizar autor parcialmente
+PATCH http://localhost:8000/autores/1
+Content-Type: application/json
+
+{
+  "nacionalidad": "Argentino"
+}

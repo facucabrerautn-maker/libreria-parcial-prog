@@ -1,0 +1,31 @@
+### Crear cliente (201)
+POST http://localhost:8000/clientes/
+Content-Type: application/json
+
+{
+  "nombre": "Tomás Ríos",
+  "email": "tomas@example.com"
+}
+
+### Obtener cliente con su perfil
+GET http://localhost:8000/clientes/1
+
+### Actualizar cliente parcialmente
+PATCH http://localhost:8000/clientes/1
+Content-Type: application/json
+
+{
+  "nombre": "Tomás Ríos Updated"
+}
+
+### Crear perfil de cliente (201)
+POST http://localhost:8000/clientes/1/perfil
+Content-Type: application/json
+
+{
+  "telefono": "+54 11 1234-5678",
+  "direccion": "Calle Falsa 123"
+}
+
+### Obtener ventas de un cliente
+GET http://localhost:8000/clientes/1/ventas

@@ -1,0 +1,30 @@
+### Crear libro con autorías (201)
+POST http://localhost:8000/libros/
+Content-Type: application/json
+
+{
+  "isbn": "978-950-00-0006-6",
+  "titulo": "Rayuela",
+  "precio": "25000.00",
+  "stock": 4,
+  "editorial_id": 1,
+  "genero_id": 1,
+  "autorias": [
+    { "autor_id": 1, "rol": "autor", "orden": 1 },
+    { "autor_id": 2, "rol": "coautor", "orden": 2 }
+  ]
+}
+
+### Listar libros con filtro por título y paginación
+GET http://localhost:8000/libros/?titulo=rayuela&limit=10&offset=0
+
+### Obtener detalle de un libro (con editorial, género y autorías)
+GET http://localhost:8000/libros/1
+
+### Actualizar libro parcialmente
+PATCH http://localhost:8000/libros/1
+Content-Type: application/json
+
+{
+  "stock": 5
+}

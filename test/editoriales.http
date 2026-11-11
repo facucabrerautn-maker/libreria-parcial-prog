@@ -1,0 +1,25 @@
+### Crear editorial (201)
+POST http://localhost:8000/editoriales/
+Content-Type: application/json
+
+{
+  "nombre": "Editorial Sudamericana",
+  "pais": "Argentina"
+}
+
+### Listar editoriales (paginado)
+GET http://localhost:8000/editoriales/?limit=10&offset=0
+
+### Obtener editorial por id
+GET http://localhost:8000/editoriales/1
+
+### Actualizar editorial parcialmente (PATCH, exclude_unset)
+PATCH http://localhost:8000/editoriales/1
+Content-Type: application/json
+
+{
+  "pais": "Colombia"
+}
+
+### Obtener libros de una editorial
+GET http://localhost:8000/editoriales/1/libros

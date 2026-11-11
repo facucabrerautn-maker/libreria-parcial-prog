@@ -1,0 +1,17 @@
+### Crear venta con dos renglones (201)
+POST http://localhost:8000/ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 1,
+  "renglones": [
+    { "libro_id": 1, "cantidad": 2 },
+    { "libro_id": 2, "cantidad": 1 }
+  ]
+}
+
+### Listar ventas (paginado)
+GET http://localhost:8000/ventas/?limit=10&offset=0
+
+### Obtener detalle de una venta (con cliente y renglones)
+GET http://localhost:8000/ventas/1

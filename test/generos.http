@@ -1,0 +1,21 @@
+### Crear género (201)
+POST http://localhost:8000/generos/
+Content-Type: application/json
+
+{
+  "nombre": "Novela"
+}
+
+### Listar géneros (paginado)
+GET http://localhost:8000/generos/?limit=10&offset=0
+
+### Obtener género por id
+GET http://localhost:8000/generos/1
+
+### Actualizar género parcialmente
+PATCH http://localhost:8000/generos/1
+Content-Type: application/json
+
+{
+  "nombre": "Novela contemporánea"
+}
