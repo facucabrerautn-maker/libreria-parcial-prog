@@ -201,7 +201,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
 ## FASE 2 — Clientes, Perfiles y Ventas
 
 ### [C-08] `clientes-y-perfiles`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Clientes y perfil uno a uno
   - Modelo `Cliente` (`id`, `nombre`, `email` UNIQUE) y `PerfilCliente` (`id`, `cliente_id` UNIQUE FK, `telefono`, `direccion`)
   - `POST /clientes/` (201; 409 si `email` duplica), `GET /clientes/{id}` con perfil, `PATCH /clientes/{id}` (`exclude_unset`), `POST /clientes/{id}/perfil` (201; 409 si ya tiene perfil), `GET /clientes/{id}/ventas`
