@@ -156,7 +156,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/05_reglas_de_negocio.md` (RN-01, RN-10, RN-12)
 
 ### [C-05] `generos-crud`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: CRUD de géneros
   - Modelo `Genero` (`id`, `nombre` UNIQUE)
   - `POST /generos/` (201; 409 si `nombre` duplica), `GET /generos/` paginado, `GET /generos/{id}` (200, 404), `GET /generos/{id}/libros`
