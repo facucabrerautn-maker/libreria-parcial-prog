@@ -251,7 +251,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/09_decisiones_y_supuestos.md` (S-06: casos de prueba son archivos `.http`)
 
 ### [C-11] `docker-despliegue`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Imagen Docker y despliegue en VPS
   - `Dockerfile` final: `python:3.12-alpine`, dependencias instaladas con `--no-cache-dir` antes de copiar el código (capa de caché), usuario no root, `docker run -d --name libreria -p <puerto>:8000 --restart unless-stopped --env-file`
   - `.env.example` con la forma de `DATABASE_URL` (sin valores reales) y `SQL_ECHO`
