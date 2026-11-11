@@ -214,7 +214,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/05_reglas_de_negocio.md` (RN-02, RN-09, RN-12)
 
 ### [C-09] `ventas-con-renglones`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Alta de venta con renglones anidados (flujo transaccional más crítico)
   - Modelo `Venta` (`id`, `cliente_id` FK, `fecha` con zona horaria, `total` NUMERIC(12,2) CHECK >= 0) y `RenglonVenta` (`id`, `venta_id` FK, `libro_id` FK, `cantidad` CHECK > 0, `precio_unitario` NUMERIC(10,2) CHECK > 0)
   - `POST /ventas/` con `cliente_id` + lista de `renglones` (`libro_id`, `cantidad`); al menos un renglón y libro no repetido (422); `precio_unitario` copiado del libro en el service (no viaja en el DTO, RN-06); `total` = suma cantidad × precio_unitario calculado por el servidor (no viaja en el DTO, RN-07); composición `venta → renglones`
