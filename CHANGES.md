@@ -142,7 +142,7 @@ Paso │ Agente A (Backend Core)     │ Agente B (Backend Aux - Catálogo) │ 
   - `knowledge-base/08_arquitectura_propuesta.md` §Despliegue (HEALTHCHECK)
 
 ### [C-04] `editoriales-crud`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: CRUD de editoriales
   - Modelo `Editorial` (`id`, `nombre` UNIQUE, `pais`)
   - `POST /editoriales/` (201; 409 si `nombre` duplica), `GET /editoriales/` paginado con `limit`/`offset`, `GET /editoriales/{id}` (200, 404), `PATCH /editoriales/{id}` (`exclude_unset`; 200, 404, 409, 422), `GET /editoriales/{id}/libros`
