@@ -32,7 +32,7 @@ async def list_autores(
         offset = 0
 
     result = await session.execute(
-        select(Autor).offset(offset).limit(limit)
+        select(Autor).order_by(Autor.id).offset(offset).limit(limit)
     )
     autores = result.scalars().all()
     return [AutorRead.model_validate(a) for a in autores]
@@ -87,7 +87,7 @@ async def list_libros_por_autor(
         select(LibroAutor)
         .options(joinedload(LibroAutor.libro))
         .where(LibroAutor.autor_id == autor_id)
-        .order_by(LibroAutor.orden)
+        .order_by(LibroAutor.orden, LibroAutor.libro_id)
         .offset(offset)
         .limit(limit)
     )

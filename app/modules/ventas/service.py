@@ -146,6 +146,7 @@ async def list_ventas(
             joinedload(Venta.cliente),
             selectinload(Venta.renglones).selectinload(RenglonVenta.libro),
         )
+        .order_by(Venta.id)
         .offset(offset)
         .limit(limit)
     )

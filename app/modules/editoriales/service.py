@@ -39,7 +39,7 @@ async def list_editoriales(
         offset = 0
 
     result = await session.execute(
-        select(Editorial).offset(offset).limit(limit)
+        select(Editorial).order_by(Editorial.id).offset(offset).limit(limit)
     )
     editoriales = result.scalars().all()
     return [EditorialRead.model_validate(e) for e in editoriales]
@@ -96,6 +96,7 @@ async def list_libros_por_editorial(
     result = await session.execute(
         select(Libro)
         .where(Libro.editorial_id == editorial_id)
+        .order_by(Libro.id)
         .offset(offset)
         .limit(limit)
     )

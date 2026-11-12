@@ -121,12 +121,19 @@ async def create_perfil_cliente(
 
 
 async def list_ventas_por_cliente(
-    session: AsyncSession, cliente_id: int
+    session: AsyncSession, cliente_id: int, limit: int = 20, offset: int = 0
 ) -> List[VentaRead]:
-    """Obtiene las ventas de un cliente con carga anticipada de relaciones."""
+    """Obtiene las ventas de un cliente con carga anticipada y paginación."""
     cliente = await session.get(Cliente, cliente_id)
     if cliente is None:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    if limit < 1:
+        limit = 1
+    if limit > 100:
+        limit = 100
+    if offset < 0:
+        offset = 0
 
     result = await session.execute(
         select(Venta)
@@ -135,7 +142,9 @@ async def list_ventas_por_cliente(
             selectinload(Venta.renglones).selectinload(RenglonVenta.libro),
         )
         .where(Venta.cliente_id == cliente_id)
-        .order_by(Venta.fecha.desc())
+        .order_by(Venta.fecha.desc(), Venta.id.desc())
+        .offset(offset)
+        .limit(limit)
     )
     ventas = result.scalars().all()
     return [VentaRead.model_validate(v) for v in ventas]

@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
@@ -106,11 +106,18 @@ async def crear_perfil(
 )
 async def obtener_ventas_cliente(
     cliente_id: int,
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     session: AsyncSession = Depends(get_session),
 ) -> List[VentaRead]:
-    """Obtiene las ventas de un cliente.
+    """Obtiene las ventas de un cliente, con paginación.
+
+    - `limit`: cantidad de resultados (1 a 100, default 20)
+    - `offset`: posición inicial (default 0)
 
     - 200: lista de ventas (puede ser vacía)
     - 404: cliente no encontrado
     """
-    return await list_ventas_por_cliente(session, cliente_id)
+    return await list_ventas_por_cliente(
+        session, cliente_id, limit=limit, offset=offset
+    )

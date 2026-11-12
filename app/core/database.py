@@ -18,14 +18,22 @@ Base = BaseModel
 
 async def init_db(
     app: FastAPI,
-    database_url: str = DATABASE_URL,
+    database_url: str | None = DATABASE_URL,
     echo: bool = SQL_ECHO,
 ) -> None:
     """Crea el motor y la fábrica de sesiones en app.state, y crea las tablas
     que falten con SQLModel.metadata.create_all.
 
-    Se invoca en el lifespan de la aplicación (app/main.py).
+    Se invoca en el lifespan de la aplicación (app/main.py). Falla con un
+    mensaje claro si falta DATABASE_URL (D-05): el proyecto no trae una
+    dirección de base por defecto.
     """
+    if not database_url:
+        raise RuntimeError(
+            "Falta DATABASE_URL. Definí la variable de entorno o el archivo "
+            ".env antes de arrancar la aplicación."
+        )
+
     engine = create_async_engine(database_url, echo=echo)
     app.state.engine = engine
     app.state.session_factory = async_sessionmaker(

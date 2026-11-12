@@ -1,3 +1,4 @@
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -14,7 +15,7 @@ from app.modules.ventas.router import router as ventas_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await init_db(app, DATABASE_URL, echo=SQL_ECHO)
     yield
     await close_db(app)
@@ -37,5 +38,5 @@ app.include_router(ventas_router)
 
 
 @app.get("/")
-async def root():
+async def root() -> dict[str, str]:
     return {"mensaje": "Librería API — en funcionamiento"}

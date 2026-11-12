@@ -39,7 +39,7 @@ async def list_generos(
         offset = 0
 
     result = await session.execute(
-        select(Genero).offset(offset).limit(limit)
+        select(Genero).order_by(Genero.id).offset(offset).limit(limit)
     )
     generos = result.scalars().all()
     return [GeneroRead.model_validate(g) for g in generos]
@@ -96,6 +96,7 @@ async def list_libros_por_genero(
     result = await session.execute(
         select(Libro)
         .where(Libro.genero_id == genero_id)
+        .order_by(Libro.id)
         .offset(offset)
         .limit(limit)
     )

@@ -85,7 +85,7 @@ async def list_libros(
     if genero_id is not None:
         query = query.where(Libro.genero_id == genero_id)
 
-    query = query.offset(offset).limit(limit)
+    query = query.order_by(Libro.id).offset(offset).limit(limit)
     result = await session.execute(query)
     libros = result.scalars().all()
     return [LibroRead.model_validate(libro) for libro in libros]
