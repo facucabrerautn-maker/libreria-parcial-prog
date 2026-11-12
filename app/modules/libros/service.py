@@ -7,7 +7,26 @@ from sqlalchemy.orm import joinedload, selectinload
 from fastapi import HTTPException
 
 from app.modules.libros.models import Libro, LibroAutor
-from app.modules.libros.schemas import LibroCreate, LibroUpdate, LibroRead
+from app.modules.libros.schemas import (
+    AutorIA,
+    LibroCreate,
+    LibroRead,
+    LibroUpdate,
+)
+
+
+def _validar_autores_unicos(autores: List[AutorIA]) -> None:
+    """Rechaza autorías repetidas: un mismo autor no puede ir dos veces.
+
+    Es un dato inválido (422), no una violación de clave foránea, así que se
+    valida antes de escribir para no confundirlo con el 409 de FK/ISBN.
+    """
+    autor_ids = [autoria.autor_id for autoria in autores]
+    if len(autor_ids) != len(set(autor_ids)):
+        raise HTTPException(
+            status_code=422,
+            detail="Un mismo autor no puede aparecer en dos autorías del libro",
+        )
 
 
 async def _cargar_libro(session: AsyncSession, libro_id: int) -> LibroRead:
@@ -31,6 +50,8 @@ async def create_libro(session: AsyncSession, libro_in: LibroCreate) -> LibroRea
     - No consulta previamente si los ids existen (la base rechaza FK inválida → 409)
     - El precio y stock se validan con CHECK en la base y con el DTO
     """
+    _validar_autores_unicos(libro_in.autores)
+
     libro_data = libro_in.model_dump(exclude={"autores"})
     libro = Libro(**libro_data)
     session.add(libro)
@@ -115,6 +136,9 @@ async def update_libro(
     libro = await session.get(Libro, libro_id)
     if libro is None:
         raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    if libro_in.autores is not None:
+        _validar_autores_unicos(libro_in.autores)
 
     update_data = libro_in.model_dump(exclude_unset=True, exclude={"autores"})
     for field, value in update_data.items():
