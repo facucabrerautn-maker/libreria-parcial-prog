@@ -1,5 +1,9 @@
 FROM python:3.12-alpine
 
+# Logs sin buffer para que docker logs muestre el aviso del comprobante (D-07)
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
 WORKDIR /app
 
 # Capa de dependencias: se instala antes de copiar el código para aprovechar la caché
