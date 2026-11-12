@@ -1,8 +1,9 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.core.database import get_session
+from app.modules.clientes.models import Cliente
 from app.modules.clientes.schemas import (
     ClienteCreate,
     ClienteRead,
@@ -17,6 +18,7 @@ from app.modules.clientes.service import (
     list_ventas_por_cliente,
     update_cliente,
 )
+from app.modules.ventas.schemas import VentaRead
 
 router = APIRouter(prefix="/clientes", tags=["clientes"])
 
@@ -97,18 +99,18 @@ async def crear_perfil(
 
 @router.get(
     "/{cliente_id}/ventas",
-    response_model=List,
+    response_model=List[VentaRead],
     summary="Obtener ventas de un cliente",
 )
 async def obtener_ventas_cliente(
     cliente_id: int, session=Depends(get_session)
-) -> List:
+) -> List[VentaRead]:
     """Obtiene las ventas de un cliente.
 
     - 200: lista de ventas
     - 404: cliente no encontrado
     """
-    cliente = await session.get(__import__("app.modules.clientes.models", fromlist=["Cliente"]).Cliente, cliente_id)
+    cliente = await session.get(Cliente, cliente_id)
     if cliente is None:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
     return await list_ventas_por_cliente(session, cliente_id)

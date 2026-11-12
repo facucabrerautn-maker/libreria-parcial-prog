@@ -12,8 +12,8 @@ class Venta(BaseModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     cliente_id: int = Field(foreign_key="cliente.id")
-    fecha: datetime = Field(sa_column_kwargs={"timezone": True})
-    total: float = Field(sa_column_kwargs={"check_constraint": "total >= 0"})
+    fecha: datetime
+    total: float
 
     cliente: Optional["Cliente"] = Relationship(back_populates="ventas")
     renglones: List["RenglonVenta"] = Relationship(back_populates="venta")
@@ -29,8 +29,8 @@ class RenglonVenta(BaseModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     venta_id: int = Field(foreign_key="venta.id")
     libro_id: int = Field(foreign_key="libro.id")
-    cantidad: int = Field(sa_column_kwargs={"check_constraint": "cantidad > 0"})
-    precio_unitario: float = Field(sa_column_kwargs={"check_constraint": "precio_unitario > 0"})
+    cantidad: int
+    precio_unitario: float
 
     venta: Optional["Venta"] = Relationship(back_populates="renglones")
     libro: Optional["Libro"] = Relationship(back_populates="renglones_venta")

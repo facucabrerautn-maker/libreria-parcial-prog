@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 from fastapi import HTTPException
 
 from app.modules.clientes.models import Cliente, PerfilCliente
@@ -14,6 +14,8 @@ from app.modules.clientes.schemas import (
     PerfilCreate,
     PerfilRead,
 )
+from app.modules.ventas.models import Venta, RenglonVenta
+from app.modules.ventas.schemas import VentaRead
 
 
 async def create_cliente(session: AsyncSession, cliente_in: ClienteCreate) -> ClienteRead:
@@ -49,7 +51,12 @@ async def update_cliente(
     session: AsyncSession, cliente_id: int, cliente_in: ClienteUpdate
 ) -> ClienteRead:
     """Actualiza un cliente parcialmente (solo campos enviados)."""
-    cliente = await session.get(Cliente, cliente_id)
+    result = await session.execute(
+        select(Cliente)
+        .options(joinedload(Cliente.perfil))
+        .where(Cliente.id == cliente_id)
+    )
+    cliente = result.scalar_one_or_none()
     if cliente is None:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
 
@@ -81,7 +88,12 @@ async def create_perfil_cliente(
     session: AsyncSession, cliente_id: int, perfil_in: PerfilCreate
 ) -> PerfilRead:
     """Crea un perfil para un cliente. 404 si el cliente no existe, 409 si ya tiene perfil."""
-    cliente = await session.get(Cliente, cliente_id)
+    result = await session.execute(
+        select(Cliente)
+        .options(joinedload(Cliente.perfil))
+        .where(Cliente.id == cliente_id)
+    )
+    cliente = result.scalar_one_or_none()
     if cliente is None:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
 
@@ -109,6 +121,23 @@ async def create_perfil_cliente(
 async def list_ventas_por_cliente(
     session: AsyncSession, cliente_id: int
 ) -> List:
-    """Obtiene las ventas de un cliente. Se implementa completamente en C-09."""
-    # Placeholder: se completa en C-09 con el modelo Venta
-    return []
+    """Obtiene las ventas de un cliente con carga anticipada de relaciones."""
+    # Verificar que el cliente exista
+    result_cliente = await session.execute(
+        select(Cliente).where(Cliente.id == cliente_id)
+    )
+    cliente = result_cliente.scalar_one_or_none()
+    if cliente is None:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    # Consultar ventas del cliente con carga anticipada de renglones y libros
+    result = await session.execute(
+        select(Venta)
+        .options(
+            selectinload(Venta.renglones).selectinload(RenglonVenta.libro),
+        )
+        .where(Venta.cliente_id == cliente_id)
+        .order_by(Venta.fecha.desc())
+    )
+    ventas = result.scalars().all()
+    return [VentaRead.model_validate(v) for v in ventas]

@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import List
 
 from sqlalchemy import select
@@ -48,11 +48,22 @@ async def create_venta(
             detail="Un mismo libro no puede aparecer en dos renglones",
         )
 
+    # Validar que el cliente exista (carga anticipada para evitar lazy load)
+    result_cliente = await session.execute(
+        select(Cliente).where(Cliente.id == venta_in.cliente_id)
+    )
+    cliente = result_cliente.scalar_one_or_none()
+    if cliente is None:
+        raise HTTPException(
+            status_code=409,
+            detail="Cliente no encontrado",
+        )
+
     # Leer precios de los libros de la base (una consulta con IN)
-    result = await session.execute(
+    result_libros = await session.execute(
         select(Libro).where(Libro.id.in_(libro_ids))
     )
-    libros = {libro.id: libro for libro in result.scalars().all()}
+    libros = {libro.id: libro for libro in result_libros.scalars().all()}
 
     # Validar que todos los libros existan
     for libro_id in libro_ids:
@@ -81,7 +92,7 @@ async def create_venta(
     # Crear la venta
     venta = Venta(
         cliente_id=venta_in.cliente_id,
-        fecha=datetime.now(timezone.utc),
+        fecha=datetime.now(),
         total=total,
     )
     session.add(venta)

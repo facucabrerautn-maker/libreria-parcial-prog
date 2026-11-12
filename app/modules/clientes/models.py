@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from sqlmodel import Field, Relationship
 
@@ -11,8 +11,8 @@ class Cliente(BaseModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     nombre: str
     email: str = Field(index=True, unique=True)
-
     perfil: Optional["PerfilCliente"] = Relationship(back_populates="cliente", sa_relationship_kwargs={"uselist": False})
+    ventas: List["Venta"] = Relationship(back_populates="cliente")
 
 
 class PerfilCliente(BaseModel, table=True):
@@ -22,5 +22,4 @@ class PerfilCliente(BaseModel, table=True):
     cliente_id: int = Field(foreign_key="cliente.id", unique=True)
     telefono: Optional[str] = None
     direccion: Optional[str] = None
-
     cliente: Optional["Cliente"] = Relationship(back_populates="perfil")

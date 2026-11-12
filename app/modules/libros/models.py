@@ -1,7 +1,8 @@
-from typing import Optional, List
+from datetime import datetime
+from typing import List, Optional
 
 from sqlalchemy import CheckConstraint, ForeignKey
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship
 
 from app.core.base import BaseModel
 
@@ -12,14 +13,15 @@ class Libro(BaseModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     isbn: str = Field(index=True, unique=True)
     titulo: str
-    precio: float = Field(sa_column_kwargs={"check_constraint": "precio > 0"})
-    stock: int = Field(default=0, sa_column_kwargs={"check_constraint": "stock >= 0"})
+    precio: float
+    stock: int = 0
     editorial_id: Optional[int] = Field(default=None, foreign_key="editorial.id")
     genero_id: Optional[int] = Field(default=None, foreign_key="genero.id")
 
     editorial: Optional["Editorial"] = Relationship(back_populates="libros")
     genero: Optional["Genero"] = Relationship(back_populates="libros")
     autorias: List["LibroAutor"] = Relationship(back_populates="libro")
+    renglones_venta: List["RenglonVenta"] = Relationship(back_populates="libro")
 
     __table_args__ = (
         CheckConstraint("precio > 0", name="chk_libro_precio_positivo"),

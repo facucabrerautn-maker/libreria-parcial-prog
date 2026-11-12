@@ -1,37 +1,44 @@
-from typing import List, Optional
+from typing import Optional
 
+from sqlmodel import SQLModel
 from pydantic import Field as PydanticField
 
-from app.modules.clientes.models import Cliente, PerfilCliente
 
-
-class ClienteCreate(Cliente):
+class ClienteCreate(SQLModel):
     """DTO de entrada para crear un cliente. No lleva id."""
-    pass
+    nombre: str
+    email: str
 
 
-class ClienteUpdate(Cliente):
+class ClienteUpdate(SQLModel):
     """DTO de entrada para actualizar un cliente. Campos opcionales (PATCH parcial)."""
     nombre: Optional[str] = PydanticField(default=None)
     email: Optional[str] = PydanticField(default=None)
 
 
-class ClienteRead(Cliente):
+class ClienteRead(SQLModel):
     """DTO de salida de un cliente (incluye perfil si existe)."""
     id: int
-    perfil: Optional["PerfilClienteRead"] = None
+    nombre: str
+    email: str
+    perfil: Optional["PerfilRead"] = None
 
     model_config = {"from_attributes": True}
 
 
-class PerfilCreate(PerfilCliente):
+class PerfilCreate(SQLModel):
     """DTO de entrada para crear un perfil. No lleva id."""
-    pass
+    cliente_id: int
+    telefono: Optional[str] = PydanticField(default=None)
+    direccion: Optional[str] = PydanticField(default=None)
 
 
-class PerfilRead(PerfilCliente):
+class PerfilRead(SQLModel):
     """DTO de salida de un perfil."""
     id: int
+    cliente_id: int
+    telefono: Optional[str] = None
+    direccion: Optional[str] = None
 
     model_config = {"from_attributes": True}
 

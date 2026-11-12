@@ -1,6 +1,6 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from sqlmodel import Field
+from sqlmodel import Field, Relationship
 
 from app.core.base import BaseModel
 
@@ -11,5 +11,4 @@ class Autor(BaseModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     nombre: str = Field(index=True)
     nacionalidad: Optional[str] = None
-
-    # La relación con Libro a través de LibroAutor se completa en C-07
+    autorias: List["LibroAutor"] = Relationship(back_populates="autor")
