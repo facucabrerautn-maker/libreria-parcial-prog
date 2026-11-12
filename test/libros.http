@@ -23,7 +23,8 @@ Content-Type: application/json
   "isbn": "978-950-00-0100-1",
   "titulo": "Otro título",
   "precio": "10000.00",
-  "stock": 1
+  "stock": 1,
+  "editorial_id": 1
 }
 
 ### Crear libro con editorial inexistente (409, mensaje propio) - Caso C-04
@@ -47,6 +48,7 @@ Content-Type: application/json
   "titulo": "Autor inexistente",
   "precio": "10000.00",
   "stock": 1,
+  "editorial_id": 1,
   "autores": [
     { "autor_id": 999, "rol": "autor", "orden": 1 }
   ]
@@ -60,7 +62,8 @@ Content-Type: application/json
   "isbn": "978-950-00-0100-4",
   "titulo": "Precio inválido",
   "precio": "0",
-  "stock": 1
+  "stock": 1,
+  "editorial_id": 1
 }
 
 ### Crear libro con rol de autoría inválido (422)
@@ -72,6 +75,7 @@ Content-Type: application/json
   "titulo": "Rol inválido",
   "precio": "10000.00",
   "stock": 1,
+  "editorial_id": 1,
   "autores": [
     { "autor_id": 1, "rol": "dueño", "orden": 1 }
   ]
