@@ -1,5 +1,9 @@
 # Despliegue — Librería API
 
+## URL pública
+
+- _(Completar con la URL declarada para la corrección, por ejemplo `http://IP:PUERTO`)_
+
 ## Imagen Docker
 
 La imagen se construye con:
@@ -22,6 +26,17 @@ docker run -d --name libreria -p <puerto>:8000 --restart unless-stopped \
 ## Base de datos
 
 La base de datos no forma parte de la imagen. El contenedor se conecta a un PostgreSQL 16 ya existente en el VPS a través de `DATABASE_URL`.
+
+### Datos iniciales
+
+Con el contenedor en ejecución, se cargan los datos iniciales con:
+
+```bash
+docker exec libreria python -m scripts.seed
+```
+
+El script es idempotente: vacía las tablas del dominio y vuelve a insertar el
+estado inicial conocido (editoriales, géneros, autores, libros y clientes).
 
 **Nota:** Dentro de un contenedor, `localhost` es el propio contenedor. Si PostgreSQL corre directamente en el servidor, el contenedor la alcanza por `host.docker.internal` (habilitar con `--add-host=host.docker.internal:host-gateway` en Linux) o la dirección que entregue la cátedra.
 

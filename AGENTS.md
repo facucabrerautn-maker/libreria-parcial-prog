@@ -6,15 +6,19 @@
 |------------|---------|-----|
 | Python | 3.12 | Lenguaje |
 | FastAPI | 0.111 | Framework web; handlers `async def` |
-| SQLModel | 0.0.24 | Modelos de tabla y contratos |
+| SQLModel | 0.0.37 | Modelos de tabla y contratos |
 | SQLAlchemy | 2.0 (async) | Motor, sesión y carga anticipada |
-| asyncpg | 0.30 | Controlador asíncrono de PostgreSQL |
+| asyncpg | 0.32 | Controlador asíncrono de PostgreSQL |
 | PostgreSQL | 16 | Base de datos (ya existente en el VPS) |
 | python-dotenv | 1.0 | Lectura del archivo `.env` |
 | uvicorn | — | Servidor ASGI |
 | Docker | 20.10 | Construir imagen y correr contenedor |
 
 Imagen base: `python:3.12-alpine` (límite de 100 MB para la imagen base).
+
+> SQLModel 0.0.24 no es compatible con Pydantic 2.14 (falla al importar con
+> `Field 'id' requires a type annotation`). Por eso se fija `sqlmodel==0.0.37`,
+> que mantiene la API usada por el proyecto y funciona con Pydantic 2.x.
 
 ## Base de Conocimiento
 

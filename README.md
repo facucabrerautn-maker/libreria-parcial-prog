@@ -2,13 +2,17 @@
 
 API REST asíncrona para una librería de barrio que gestiona su catálogo de libros y sus ventas. Desarrollado como parcial de Programación III (Unidades 1 a 4).
 
+## Integrantes
+
+- _(Completar con nombre y apellido de cada integrante del grupo)_
+
 ## Stack
 
 - Python 3.12
 - FastAPI 0.111
-- SQLModel 0.0.24
+- SQLModel 0.0.37
 - SQLAlchemy 2.0 (async)
-- asyncpg 0.30
+- asyncpg 0.32.0
 - PostgreSQL 16
 - python-dotenv 1.0
 - uvicorn
@@ -25,6 +29,27 @@ API REST asíncrona para una librería de barrio que gestiona su catálogo de li
 
 El servidor crea las tablas al arrancar (`create_all`).
 
+> Nota: se usa `sqlmodel==0.0.37` porque SQLModel 0.0.24 no es compatible con
+> Pydantic 2.14 (falla al importar con `Field 'id' requires a type annotation`).
+
+## Carga de datos iniciales
+
+El proyecto incluye un script idempotente que deja la base en un estado inicial
+conocido: 2 editoriales, 2 géneros, 3 autores, 4 libros y 2 clientes con ids
+previsibles. Borra los datos existentes antes de cargar (no crea ventas).
+
+```bash
+python -m scripts.seed
+```
+
+Dentro del contenedor:
+
+```bash
+docker exec libreria python -m scripts.seed
+```
+
+Requiere `DATABASE_URL` en el entorno o en el archivo `.env`.
+
 ## Estructura del proyecto
 
 ```
@@ -40,6 +65,8 @@ app/
       service.py          # Lógica, traducción de errores, lecturas con precarga
       router.py           # Rutas HTTP: reciben, delegan y declaran la respuesta
 test/                     # Archivos .http con casos de prueba
+scripts/
+  seed.py                 # Datos iniciales (python -m scripts.seed)
 Dockerfile
 .dockerignore
 .env.example

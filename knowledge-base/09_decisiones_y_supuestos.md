@@ -4,7 +4,7 @@
 
 | # | Decisión | Justificación |
 |---|----------|---------------|
-| D-01 | Stack exactamente como lo fija la consigna: Python 3.12, FastAPI 0.111, SQLModel 0.0.24, SQLAlchemy 2.0 async, asyncpg, PostgreSQL 16. | La consigna especifica versiones mínimas y los casos de prueba las asumen. |
+| D-01 | Stack exactamente como lo fija la consigna: Python 3.12, FastAPI 0.111, SQLModel 0.0.37, SQLAlchemy 2.0 async, asyncpg 0.32, PostgreSQL 16. | La consigna especifica versiones mínimas y los casos de prueba las asumen. SQLModel se fija en 0.0.37 porque 0.0.24 no es compatible con Pydantic 2.14. |
 | D-02 | Imagen base `python:3.12-alpine` en lugar de `python:3.12-slim`. | Alpine ocupa 74,7 MB (bajo el límite de 100 MB); slim ocupa 180 MB y no cumple. Las dependencias (asyncpg, pydantic-core) se instalan sin compilador. |
 | D-03 | No usar Docker Compose. | La consigna dice explícitamente que el despliegue es de una sola imagen y la base ya está en el servidor. |
 | D-04 | No usar migraciones; `create_all` al arrancar. | La consigna indica que las migraciones no se evalúan y el esquema se crea con `create_all`. |

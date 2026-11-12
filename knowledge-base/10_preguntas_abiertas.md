@@ -8,7 +8,7 @@ Inconsistencias detectadas y preguntas abiertas priorizadas.
 |---|----------|-----------------|-----------|
 | PA-01 | ¿Se entregará un TP base previo del grupo sobre el cual construir el parcial, o se parte de cero? | Afecta qué código ya existe y qué hay que escribir desde cero. | Alta |
 | PA-02 | ¿Qué dirección exacta usará `DATABASE_URL` en el VPS (host.docker.internal o otra que entregue la cátedra)? | Dentro del contenedor, `localhost` no alcanza al servidor; hay que configurar `--add-host` o usar la dirección correcta. | Alta |
-| PA-03 | ¿Existe un script de datos semilla definido, o cada grupo crea el suyo? | El ejercicio 8 menciona cargar datos iniciales con `docker exec`, pero no define el comando ni el contenido. | Media |
+| PA-03 | ¿Existe un script de datos semilla definido, o cada grupo crea el suyo? | Resuelta en el proyecto: `scripts/seed.py` (`python -m scripts.seed` / `docker exec libreria python -m scripts.seed`) deja un estado inicial conocido e idempotente. | Baja |
 | PA-04 | ¿Se requiere `env.example` con campos específicos más allá de `DATABASE_URL` y `SQL_ECHO`? | La consigna menciona `env.example` con la forma de `DATABASE_URL` pero no enumera todas las variables. | Media |
 
 ## Inconsistencias detectadas

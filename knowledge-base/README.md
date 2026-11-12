@@ -15,7 +15,7 @@
 | 09 | `09_decisiones_y_supuestos.md` | Decisiones de diseño documentadas + supuestos inferidos |
 | 10 | `10_preguntas_abiertas.md` | Inconsistencias detectadas + preguntas abiertas priorizadas |
 
-**Stack:** Python 3.12, FastAPI 0.111, SQLModel 0.0.24, SQLAlchemy 2.0 async, asyncpg, PostgreSQL 16, python-dotenv, uvicorn, Docker (`python:3.12-alpine`).
+**Stack:** Python 3.12, FastAPI 0.111, SQLModel 0.0.37, SQLAlchemy 2.0 async, asyncpg 0.32, PostgreSQL 16, python-dotenv, uvicorn, Docker (`python:3.12-alpine`).
 
 **Dominio:** Librería de barrio — catálogo de libros (editoriales, géneros, autores) y ventas con renglones.
 

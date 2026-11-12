@@ -51,4 +51,4 @@ Cada clave foránea lleva un índice y navegación en los dos extremos con `Rela
 
 ## Seed data
 
-La consigna no especifica datos semilla obligatorios. Se sugiere cargar datos iniciales dentro del contenedor tras el despliegue (como menciona el ejercicio 8: `docker exec libreria …` para ejecutar el comando de datos iniciales del proyecto).
+La consigna no especifica datos semilla obligatorios. El proyecto incluye `scripts/seed.py`, ejecutable con `python -m scripts.seed` o, dentro del contenedor, `docker exec libreria python -m scripts.seed`. Deja un estado inicial conocido (2 editoriales, 2 géneros, 3 autores, 4 libros y 2 clientes) y es idempotente: vacía las tablas del dominio antes de cargar. No crea ventas.
