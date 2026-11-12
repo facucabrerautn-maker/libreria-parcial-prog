@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import ClassVar, Optional
 
-from sqlmodel import SQLModel
 from pydantic import Field as PydanticField
+from sqlmodel import SQLModel
+
+from app.core.schemas import UpdateModel
 
 
 class ClienteCreate(SQLModel):
@@ -10,10 +12,12 @@ class ClienteCreate(SQLModel):
     email: str
 
 
-class ClienteUpdate(SQLModel):
+class ClienteUpdate(UpdateModel):
     """DTO de entrada para actualizar un cliente. Campos opcionales (PATCH parcial)."""
     nombre: Optional[str] = PydanticField(default=None)
     email: Optional[str] = PydanticField(default=None)
+
+    campos_no_nulos: ClassVar[tuple[str, ...]] = ("nombre", "email")
 
 
 class ClienteRead(SQLModel):

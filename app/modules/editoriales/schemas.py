@@ -1,7 +1,9 @@
-from typing import List, Optional
+from typing import ClassVar, Optional
 
-from sqlmodel import SQLModel
 from pydantic import Field as PydanticField
+from sqlmodel import SQLModel
+
+from app.core.schemas import UpdateModel
 
 
 class EditorialCreate(SQLModel):
@@ -10,10 +12,12 @@ class EditorialCreate(SQLModel):
     pais: Optional[str] = PydanticField(default=None)
 
 
-class EditorialUpdate(SQLModel):
+class EditorialUpdate(UpdateModel):
     """DTO de entrada para actualizar una editorial. Campos opcionales (PATCH parcial)."""
     nombre: Optional[str] = PydanticField(default=None)
     pais: Optional[str] = PydanticField(default=None)
+
+    campos_no_nulos: ClassVar[tuple[str, ...]] = ("nombre",)
 
 
 class EditorialRead(SQLModel):

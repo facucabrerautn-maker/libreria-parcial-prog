@@ -1,10 +1,11 @@
 from decimal import Decimal
-from typing import List, Literal, Optional
+from typing import ClassVar, List, Literal, Optional
 
 from pydantic import AliasChoices
 from pydantic import Field as PydanticField
 from sqlmodel import SQLModel
 
+from app.core.schemas import UpdateModel
 from app.modules.autores.schemas import AutorRead
 from app.modules.editoriales.schemas import EditorialRead
 from app.modules.generos.schemas import GeneroRead
@@ -27,7 +28,7 @@ class LibroCreate(SQLModel):
     titulo: str
     precio: Decimal = PydanticField(gt=0)
     stock: int = PydanticField(default=0, ge=0)
-    editorial_id: Optional[int] = None
+    editorial_id: int
     genero_id: Optional[int] = None
     # La consigna usa "autores"; se acepta "autorias" por compatibilidad.
     autores: List[AutorIA] = PydanticField(
@@ -36,7 +37,7 @@ class LibroCreate(SQLModel):
     )
 
 
-class LibroUpdate(SQLModel):
+class LibroUpdate(UpdateModel):
     """DTO de entrada para actualizar un libro. Campos opcionales (PATCH parcial)."""
 
     isbn: Optional[str] = PydanticField(default=None)
@@ -48,6 +49,18 @@ class LibroUpdate(SQLModel):
     autores: Optional[List[AutorIA]] = PydanticField(
         default=None,
         validation_alias=AliasChoices("autores", "autorias"),
+    )
+
+    # editorial_id no es nulo en la base (solo genero_id lo permite) y
+    # autores es la lista completa: ninguno de los dos acepta null explícito.
+    campos_no_nulos: ClassVar[tuple[str, ...]] = (
+        "isbn",
+        "titulo",
+        "precio",
+        "stock",
+        "editorial_id",
+        "autores",
+        "autorias",
     )
 
 
@@ -71,7 +84,7 @@ class LibroRead(SQLModel):
     titulo: str
     precio: Decimal
     stock: int
-    editorial_id: Optional[int] = None
+    editorial_id: int
     genero_id: Optional[int] = None
     editorial: Optional[EditorialRead] = None
     genero: Optional[GeneroRead] = None
@@ -88,7 +101,7 @@ class LibroResumenRead(SQLModel):
     titulo: str
     precio: Decimal
     stock: int
-    editorial_id: Optional[int] = None
+    editorial_id: int
     genero_id: Optional[int] = None
 
     model_config = {"from_attributes": True}

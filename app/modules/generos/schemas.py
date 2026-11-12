@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import ClassVar, Optional
 
-from sqlmodel import SQLModel
 from pydantic import Field as PydanticField
+from sqlmodel import SQLModel
+
+from app.core.schemas import UpdateModel
 
 
 class GeneroCreate(SQLModel):
@@ -9,9 +11,11 @@ class GeneroCreate(SQLModel):
     nombre: str
 
 
-class GeneroUpdate(SQLModel):
+class GeneroUpdate(UpdateModel):
     """DTO de entrada para actualizar un género. Campos opcionales (PATCH parcial)."""
     nombre: Optional[str] = PydanticField(default=None)
+
+    campos_no_nulos: ClassVar[tuple[str, ...]] = ("nombre",)
 
 
 class GeneroRead(SQLModel):
