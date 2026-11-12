@@ -1,30 +1,111 @@
-### Crear libro con autorías (201)
+### Crear libro con autores (201)
 POST http://localhost:8000/libros/
 Content-Type: application/json
 
 {
-  "isbn": "978-950-00-0006-6",
+  "isbn": "978-950-00-0100-1",
   "titulo": "Rayuela",
   "precio": "25000.00",
   "stock": 4,
   "editorial_id": 1,
   "genero_id": 1,
-  "autorias": [
+  "autores": [
     { "autor_id": 1, "rol": "autor", "orden": 1 },
     { "autor_id": 2, "rol": "coautor", "orden": 2 }
   ]
 }
 
-### Listar libros con filtro por título y paginación
-GET http://localhost:8000/libros/?titulo=rayuela&limit=10&offset=0
+### Crear libro con ISBN repetido (409, mensaje propio) - Caso C-02
+POST http://localhost:8000/libros/
+Content-Type: application/json
 
-### Obtener detalle de un libro (con editorial, género y autorías)
+{
+  "isbn": "978-950-00-0100-1",
+  "titulo": "Otro título",
+  "precio": "10000.00",
+  "stock": 1
+}
+
+### Crear libro con editorial inexistente (409, mensaje propio) - Caso C-04
+POST http://localhost:8000/libros/
+Content-Type: application/json
+
+{
+  "isbn": "978-950-00-0100-2",
+  "titulo": "Editorial inexistente",
+  "precio": "10000.00",
+  "stock": 1,
+  "editorial_id": 999
+}
+
+### Crear libro con autor inexistente (409, mensaje propio) - Caso C-04
+POST http://localhost:8000/libros/
+Content-Type: application/json
+
+{
+  "isbn": "978-950-00-0100-3",
+  "titulo": "Autor inexistente",
+  "precio": "10000.00",
+  "stock": 1,
+  "autores": [
+    { "autor_id": 999, "rol": "autor", "orden": 1 }
+  ]
+}
+
+### Crear libro con precio inválido (422)
+POST http://localhost:8000/libros/
+Content-Type: application/json
+
+{
+  "isbn": "978-950-00-0100-4",
+  "titulo": "Precio inválido",
+  "precio": "0",
+  "stock": 1
+}
+
+### Crear libro con rol de autoría inválido (422)
+POST http://localhost:8000/libros/
+Content-Type: application/json
+
+{
+  "isbn": "978-950-00-0100-5",
+  "titulo": "Rol inválido",
+  "precio": "10000.00",
+  "stock": 1,
+  "autores": [
+    { "autor_id": 1, "rol": "dueño", "orden": 1 }
+  ]
+}
+
+### Listar libros con filtros de título y género
+GET http://localhost:8000/libros/?titulo=rayuela&genero_id=1&limit=10&offset=0
+
+### Obtener detalle de un libro (con editorial, género y autores)
 GET http://localhost:8000/libros/1
 
-### Actualizar libro parcialmente
+### Obtener libro inexistente (404)
+GET http://localhost:8000/libros/999
+
+### Id de ruta no entero (422, sin ejecutar el handler) - Caso C-01
+GET http://localhost:8000/libros/abc
+
+### Actualizar libro parcialmente (solo stock)
 PATCH http://localhost:8000/libros/1
 Content-Type: application/json
 
 {
   "stock": 5
 }
+
+### Reemplazar la lista completa de autores de un libro
+PATCH http://localhost:8000/libros/1
+Content-Type: application/json
+
+{
+  "autores": [
+    { "autor_id": 1, "rol": "autor", "orden": 1 }
+  ]
+}
+
+### Búsqueda por título con intento de inyección (200 con lista vacía) - Caso C-08
+GET http://localhost:8000/libros/?titulo=%27%20OR%20%271%27%3D%271

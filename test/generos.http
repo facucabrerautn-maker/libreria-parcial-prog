@@ -3,14 +3,28 @@ POST http://localhost:8000/generos/
 Content-Type: application/json
 
 {
-  "nombre": "Novela"
+  "nombre": "Ensayo"
+}
+
+### Crear género con nombre repetido (409, mensaje propio) - Caso C-02
+POST http://localhost:8000/generos/
+Content-Type: application/json
+
+{
+  "nombre": "Ensayo"
 }
 
 ### Listar géneros (paginado)
 GET http://localhost:8000/generos/?limit=10&offset=0
 
-### Obtener género por id
+### Obtener género por id (200)
 GET http://localhost:8000/generos/1
+
+### Obtener género inexistente (404)
+GET http://localhost:8000/generos/999
+
+### Id de ruta no entero (422, sin ejecutar el handler) - Caso C-01
+GET http://localhost:8000/generos/abc
 
 ### Actualizar género parcialmente
 PATCH http://localhost:8000/generos/1
@@ -19,3 +33,9 @@ Content-Type: application/json
 {
   "nombre": "Novela contemporánea"
 }
+
+### Obtener libros de un género (200)
+GET http://localhost:8000/generos/1/libros
+
+### Libros de un género inexistente (404)
+GET http://localhost:8000/generos/999/libros

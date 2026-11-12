@@ -1,5 +1,5 @@
-### C-01: Health check - aplicación viva (sin tocar la base)
+### C-01: Health check - aplicación viva (sin tocar la base, 200)
 GET http://localhost:8000/health/live
 
-### Health check - base de datos responde
+### Health check - base de datos responde (200)
 GET http://localhost:8000/health/ready

@@ -3,15 +3,30 @@ POST http://localhost:8000/editoriales/
 Content-Type: application/json
 
 {
-  "nombre": "Editorial Sudamericana",
-  "pais": "Argentina"
+  "nombre": "Editorial Planeta",
+  "pais": "España"
+}
+
+### Crear editorial con nombre repetido (409, mensaje propio) - Caso C-02
+POST http://localhost:8000/editoriales/
+Content-Type: application/json
+
+{
+  "nombre": "Editorial Planeta",
+  "pais": "España"
 }
 
 ### Listar editoriales (paginado)
 GET http://localhost:8000/editoriales/?limit=10&offset=0
 
-### Obtener editorial por id
+### Obtener editorial por id (200)
 GET http://localhost:8000/editoriales/1
+
+### Obtener editorial inexistente (404)
+GET http://localhost:8000/editoriales/999
+
+### Id de ruta no entero (422, sin ejecutar el handler) - Caso C-01
+GET http://localhost:8000/editoriales/abc
 
 ### Actualizar editorial parcialmente (PATCH, exclude_unset)
 PATCH http://localhost:8000/editoriales/1
@@ -21,5 +36,8 @@ Content-Type: application/json
   "pais": "Colombia"
 }
 
-### Obtener libros de una editorial
+### Obtener libros de una editorial (200)
 GET http://localhost:8000/editoriales/1/libros
+
+### Libros de una editorial inexistente (404)
+GET http://localhost:8000/editoriales/999/libros

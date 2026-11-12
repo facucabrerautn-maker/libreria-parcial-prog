@@ -1,4 +1,7 @@
-### Crear venta con dos renglones (201)
+### Crear venta válida con dos renglones (201) - Caso C-06
+# Respuesta esperada: renglones creados, precio_unitario copiado del libro,
+# subtotal por renglón y total calculado por el servidor. `fecha` en ISO 8601
+# con zona horaria Z.
 POST http://localhost:8000/ventas/
 Content-Type: application/json
 
@@ -10,8 +13,76 @@ Content-Type: application/json
   ]
 }
 
+### Crear venta con cliente inexistente (409) - Caso C-05
+POST http://localhost:8000/ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 999,
+  "renglones": [
+    { "libro_id": 1, "cantidad": 1 }
+  ]
+}
+
+### Crear venta con libro inexistente (409, mensaje propio) - Caso C-05
+POST http://localhost:8000/ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 1,
+  "renglones": [
+    { "libro_id": 999, "cantidad": 1 }
+  ]
+}
+
+### Crear venta sin renglones (422)
+POST http://localhost:8000/ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 1,
+  "renglones": []
+}
+
+### Crear venta con el mismo libro repetido (422)
+POST http://localhost:8000/ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 1,
+  "renglones": [
+    { "libro_id": 1, "cantidad": 1 },
+    { "libro_id": 1, "cantidad": 2 }
+  ]
+}
+
+### Crear venta con cantidad inválida (422)
+POST http://localhost:8000/ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 1,
+  "renglones": [
+    { "libro_id": 1, "cantidad": 0 }
+  ]
+}
+
 ### Listar ventas (paginado)
 GET http://localhost:8000/ventas/?limit=10&offset=0
 
 ### Obtener detalle de una venta (con cliente y renglones)
 GET http://localhost:8000/ventas/1
+
+### Obtener venta inexistente (404)
+GET http://localhost:8000/ventas/999
+
+### Id de ruta no entero (422, sin ejecutar el handler) - Caso C-01
+GET http://localhost:8000/ventas/abc
+
+### Las ventas no se modifican: PATCH no está definido (405) - RN-08
+PATCH http://localhost:8000/ventas/1
+Content-Type: application/json
+
+{
+  "total": "1.00"
+}

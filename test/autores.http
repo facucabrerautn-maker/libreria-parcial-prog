@@ -10,8 +10,14 @@ Content-Type: application/json
 ### Listar autores (paginado)
 GET http://localhost:8000/autores/?limit=10&offset=0
 
-### Obtener autor por id
+### Obtener autor por id (200)
 GET http://localhost:8000/autores/1
+
+### Obtener autor inexistente (404)
+GET http://localhost:8000/autores/999
+
+### Id de ruta no entero (422, sin ejecutar el handler) - Caso C-01
+GET http://localhost:8000/autores/abc
 
 ### Actualizar autor parcialmente
 PATCH http://localhost:8000/autores/1
@@ -20,3 +26,9 @@ Content-Type: application/json
 {
   "nacionalidad": "Argentino"
 }
+
+### Obtener libros de un autor con rol y orden (200)
+GET http://localhost:8000/autores/1/libros
+
+### Libros de un autor inexistente (404)
+GET http://localhost:8000/autores/999/libros
