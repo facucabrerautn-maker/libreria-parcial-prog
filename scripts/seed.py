@@ -94,9 +94,7 @@ async def seed() -> None:
             autor_borges = Autor(
                 nombre="Jorge Luis Borges", nacionalidad="Argentina"
             )
-            autor_garcia_marquez = Autor(
-                nombre="Gabriel García Márquez", nacionalidad="Colombia"
-            )
+            autor_piglia = Autor(nombre="Ricardo Piglia", nacionalidad="Argentina")
 
             session.add_all(
                 [
@@ -106,7 +104,7 @@ async def seed() -> None:
                     genero_cuento,
                     autor_cortazar,
                     autor_borges,
-                    autor_garcia_marquez,
+                    autor_piglia,
                 ]
             )
             await session.commit()
@@ -118,7 +116,7 @@ async def seed() -> None:
                 genero_cuento,
                 autor_cortazar,
                 autor_borges,
-                autor_garcia_marquez,
+                autor_piglia,
             ):
                 await session.refresh(entidad)
 
@@ -146,9 +144,9 @@ async def seed() -> None:
                 editorial_id=editorial_anagrama.id,
                 genero_id=genero_cuento.id,
             )
-            libro_cien_anios = Libro(
+            libro_respiracion = Libro(
                 isbn="978-84-339-7001-8",
-                titulo="Cien años de soledad",
+                titulo="Respiración artificial",
                 precio=Decimal("27000.00"),
                 stock=2,
                 editorial_id=editorial_anagrama.id,
@@ -160,7 +158,7 @@ async def seed() -> None:
                     libro_rayuela,
                     libro_bestiario,
                     libro_ficciones,
-                    libro_cien_anios,
+                    libro_respiracion,
                 ]
             )
             await session.commit()
@@ -169,7 +167,7 @@ async def seed() -> None:
                 libro_rayuela,
                 libro_bestiario,
                 libro_ficciones,
-                libro_cien_anios,
+                libro_respiracion,
             ):
                 await session.refresh(libro)
 
@@ -194,19 +192,21 @@ async def seed() -> None:
                         orden=1,
                     ),
                     LibroAutor(
-                        libro_id=libro_cien_anios.id,
-                        autor_id=autor_garcia_marquez.id,
+                        libro_id=libro_respiracion.id,
+                        autor_id=autor_piglia.id,
                         rol="autor",
                         orden=1,
                     ),
                 ]
             )
 
+            cliente_ana = Cliente(nombre="Ana Gómez", email="ana@example.com")
             cliente_tomas = Cliente(
                 nombre="Tomás Ríos", email="tomas@example.com"
             )
-            cliente_ana = Cliente(nombre="Ana Gómez", email="ana@example.com")
-            session.add_all([cliente_tomas, cliente_ana])
+            # Orden intencional: Tomás Ríos queda con id 2, como en el
+            # ejemplo de POST /ventas/ de la consigna (caso C-06 / D-03).
+            session.add_all([cliente_ana, cliente_tomas])
             await session.commit()
             await session.refresh(cliente_tomas)
 
