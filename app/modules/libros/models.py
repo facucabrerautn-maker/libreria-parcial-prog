@@ -1,8 +1,8 @@
-from datetime import datetime
+from decimal import Decimal
 from typing import List, Optional
 
-from sqlalchemy import CheckConstraint, ForeignKey
-from sqlmodel import Field, Relationship
+from sqlalchemy import CheckConstraint, Column, Numeric
+from sqlmodel import Field, Relationship, SQLModel
 
 from app.core.base import BaseModel
 
@@ -13,10 +13,14 @@ class Libro(BaseModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     isbn: str = Field(index=True, unique=True)
     titulo: str
-    precio: float
+    precio: Decimal = Field(sa_column=Column(Numeric(10, 2), nullable=False))
     stock: int = 0
-    editorial_id: Optional[int] = Field(default=None, foreign_key="editorial.id")
-    genero_id: Optional[int] = Field(default=None, foreign_key="genero.id")
+    editorial_id: Optional[int] = Field(
+        default=None, foreign_key="editorial.id", index=True
+    )
+    genero_id: Optional[int] = Field(
+        default=None, foreign_key="genero.id", index=True
+    )
 
     editorial: Optional["Editorial"] = Relationship(back_populates="libros")
     genero: Optional["Genero"] = Relationship(back_populates="libros")
@@ -29,7 +33,14 @@ class Libro(BaseModel, table=True):
     )
 
 
-class LibroAutor(BaseModel, table=True):
+class LibroAutor(SQLModel, table=True):
+    """Entidad de asociación Libro-Autor con datos propios (rol y orden).
+
+    No hereda de BaseModel a propósito: la clave primaria es compuesta
+    (libro_id, autor_id) y no debe llevar un id propio, tal como exige
+    el modelo de datos del parcial.
+    """
+
     __tablename__ = "libro_autor"
 
     libro_id: int = Field(foreign_key="libro.id", primary_key=True)
