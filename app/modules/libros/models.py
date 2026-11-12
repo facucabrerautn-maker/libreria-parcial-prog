@@ -15,9 +15,7 @@ class Libro(BaseModel, table=True):
     titulo: str
     precio: Decimal = Field(sa_column=Column(Numeric(10, 2), nullable=False))
     stock: int = 0
-    editorial_id: Optional[int] = Field(
-        default=None, foreign_key="editorial.id", index=True
-    )
+    editorial_id: int = Field(foreign_key="editorial.id", index=True)
     genero_id: Optional[int] = Field(
         default=None, foreign_key="genero.id", index=True
     )
@@ -44,7 +42,7 @@ class LibroAutor(SQLModel, table=True):
     __tablename__ = "libro_autor"
 
     libro_id: int = Field(foreign_key="libro.id", primary_key=True)
-    autor_id: int = Field(foreign_key="autor.id", primary_key=True)
+    autor_id: int = Field(foreign_key="autor.id", primary_key=True, index=True)
     rol: str
     orden: int
 
