@@ -4,7 +4,10 @@ API REST asíncrona para una librería de barrio que gestiona su catálogo de li
 
 ## Integrantes
 
-- _(Completar con nombre y apellido de cada integrante del grupo)_
+- Facundo Cabrera
+- Nahuel Olmos
+- Agustin Pereyra
+- Ignacio Ariza
 
 ## Stack
 
