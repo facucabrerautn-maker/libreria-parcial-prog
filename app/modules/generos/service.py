@@ -7,6 +7,8 @@ from fastapi import HTTPException
 
 from app.modules.generos.models import Genero
 from app.modules.generos.schemas import GeneroCreate, GeneroUpdate, GeneroRead
+from app.modules.libros.models import Libro
+from app.modules.libros.schemas import LibroResumenRead
 
 
 async def create_genero(session: AsyncSession, genero_in: GeneroCreate) -> GeneroRead:
@@ -74,3 +76,28 @@ async def update_genero(
             detail="Ya existe un género con ese nombre",
         ) from exc
     return GeneroRead.model_validate(genero)
+
+
+async def list_libros_por_genero(
+    session: AsyncSession, genero_id: int, limit: int = 20, offset: int = 0
+) -> List[LibroResumenRead]:
+    """Lista los libros de un género. 404 si el género no existe."""
+    genero = await session.get(Genero, genero_id)
+    if genero is None:
+        raise HTTPException(status_code=404, detail="Género no encontrado")
+
+    if limit < 1:
+        limit = 1
+    if limit > 100:
+        limit = 100
+    if offset < 0:
+        offset = 0
+
+    result = await session.execute(
+        select(Libro)
+        .where(Libro.genero_id == genero_id)
+        .offset(offset)
+        .limit(limit)
+    )
+    libros = result.scalars().all()
+    return [LibroResumenRead.model_validate(libro) for libro in libros]

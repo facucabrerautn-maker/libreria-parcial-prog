@@ -1,19 +1,18 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
-from app.modules.autores.schemas import (
-    AutorCreate,
-    AutorRead,
-    AutorUpdate,
-)
+from app.modules.autores.schemas import AutorCreate, AutorRead, AutorUpdate
 from app.modules.autores.service import (
     create_autor,
     get_autor,
     list_autores,
+    list_libros_por_autor,
     update_autor,
 )
+from app.modules.libros.schemas import LibroDeAutorRead
 
 router = APIRouter(prefix="/autores", tags=["autores"])
 
@@ -25,7 +24,8 @@ router = APIRouter(prefix="/autores", tags=["autores"])
     summary="Crear un autor",
 )
 async def crear_autor(
-    autor_in: AutorCreate, session=Depends(get_session)
+    autor_in: AutorCreate,
+    session: AsyncSession = Depends(get_session),
 ) -> AutorRead:
     """Crea un autor nuevo.
 
@@ -43,7 +43,7 @@ async def crear_autor(
 async def listar_autores(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> List[AutorRead]:
     """Lista autores con paginación.
 
@@ -59,7 +59,8 @@ async def listar_autores(
     summary="Obtener un autor por id",
 )
 async def obtener_autor(
-    autor_id: int, session=Depends(get_session)
+    autor_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> AutorRead:
     """Obtiene un autor por su id.
 
@@ -77,7 +78,7 @@ async def obtener_autor(
 async def actualizar_autor(
     autor_id: int,
     autor_in: AutorUpdate,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> AutorRead:
     """Actualiza un autor aplicando solo los campos enviados (PATCH parcial).
 
@@ -88,6 +89,22 @@ async def actualizar_autor(
     return await update_autor(session, autor_id, autor_in)
 
 
-# Los endpoints GET /autores/{id}/libros y GET, POST, PATCH /autores/
-# con relación de autorías se completan en C-07 (libros-con-autores)
-# cuando el modelo LibroAutor esté definido.
+@router.get(
+    "/{autor_id}/libros",
+    response_model=List[LibroDeAutorRead],
+    summary="Listar libros de un autor con rol y orden",
+)
+async def listar_libros_autor(
+    autor_id: int,
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    session: AsyncSession = Depends(get_session),
+) -> List[LibroDeAutorRead]:
+    """Lista los libros de un autor con el rol y el orden de cada autoría.
+
+    - 200: lista de libros (puede ser vacía)
+    - 404: el autor no existe
+    """
+    return await list_libros_por_autor(
+        session, autor_id, limit=limit, offset=offset
+    )

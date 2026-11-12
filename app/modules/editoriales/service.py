@@ -7,6 +7,8 @@ from fastapi import HTTPException
 
 from app.modules.editoriales.models import Editorial
 from app.modules.editoriales.schemas import EditorialCreate, EditorialUpdate, EditorialRead
+from app.modules.libros.models import Libro
+from app.modules.libros.schemas import LibroResumenRead
 
 
 async def create_editorial(session: AsyncSession, editorial_in: EditorialCreate) -> EditorialRead:
@@ -74,3 +76,28 @@ async def update_editorial(
             detail="Ya existe una editorial con ese nombre",
         ) from exc
     return EditorialRead.model_validate(editorial)
+
+
+async def list_libros_por_editorial(
+    session: AsyncSession, editorial_id: int, limit: int = 20, offset: int = 0
+) -> List[LibroResumenRead]:
+    """Lista los libros de una editorial. 404 si la editorial no existe."""
+    editorial = await session.get(Editorial, editorial_id)
+    if editorial is None:
+        raise HTTPException(status_code=404, detail="Editorial no encontrada")
+
+    if limit < 1:
+        limit = 1
+    if limit > 100:
+        limit = 100
+    if offset < 0:
+        offset = 0
+
+    result = await session.execute(
+        select(Libro)
+        .where(Libro.editorial_id == editorial_id)
+        .offset(offset)
+        .limit(limit)
+    )
+    libros = result.scalars().all()
+    return [LibroResumenRead.model_validate(libro) for libro in libros]

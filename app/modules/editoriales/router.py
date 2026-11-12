@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
 from app.modules.editoriales.schemas import (
@@ -12,8 +13,10 @@ from app.modules.editoriales.service import (
     create_editorial,
     get_editorial,
     list_editoriales,
+    list_libros_por_editorial,
     update_editorial,
 )
+from app.modules.libros.schemas import LibroResumenRead
 
 router = APIRouter(prefix="/editoriales", tags=["editoriales"])
 
@@ -25,7 +28,8 @@ router = APIRouter(prefix="/editoriales", tags=["editoriales"])
     summary="Crear una editorial",
 )
 async def crear_editorial(
-    editorial_in: EditorialCreate, session=Depends(get_session)
+    editorial_in: EditorialCreate,
+    session: AsyncSession = Depends(get_session),
 ) -> EditorialRead:
     """Crea una editorial nueva.
 
@@ -44,7 +48,7 @@ async def crear_editorial(
 async def listar_editoriales(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> List[EditorialRead]:
     """Lista editoriales con paginación.
 
@@ -60,7 +64,8 @@ async def listar_editoriales(
     summary="Obtener una editorial por id",
 )
 async def obtener_editorial(
-    editorial_id: int, session=Depends(get_session)
+    editorial_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> EditorialRead:
     """Obtiene una editorial por su id.
 
@@ -78,7 +83,7 @@ async def obtener_editorial(
 async def actualizar_editorial(
     editorial_id: int,
     editorial_in: EditorialUpdate,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> EditorialRead:
     """Actualiza una editorial aplicando solo los campos enviados (PATCH parcial).
 
@@ -90,5 +95,22 @@ async def actualizar_editorial(
     return await update_editorial(session, editorial_id, editorial_in)
 
 
-# El endpoint GET /editoriales/{id}/libros se completa en C-07 (libros-con-autores)
-# cuando el modelo Libro esté definido y la relación esté completa.
+@router.get(
+    "/{editorial_id}/libros",
+    response_model=List[LibroResumenRead],
+    summary="Listar libros de una editorial",
+)
+async def listar_libros_editorial(
+    editorial_id: int,
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    session: AsyncSession = Depends(get_session),
+) -> List[LibroResumenRead]:
+    """Lista los libros de una editorial.
+
+    - 200: lista de libros (puede ser vacía)
+    - 404: la editorial no existe
+    """
+    return await list_libros_por_editorial(
+        session, editorial_id, limit=limit, offset=offset
+    )

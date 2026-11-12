@@ -15,9 +15,9 @@ from app.modules.ventas.router import router as ventas_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db(DATABASE_URL, echo=SQL_ECHO)
+    await init_db(app, DATABASE_URL, echo=SQL_ECHO)
     yield
-    await close_db()
+    await close_db(app)
 
 
 app = FastAPI(

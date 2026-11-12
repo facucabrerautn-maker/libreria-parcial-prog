@@ -1,19 +1,18 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
-from app.modules.generos.schemas import (
-    GeneroCreate,
-    GeneroRead,
-    GeneroUpdate,
-)
+from app.modules.generos.schemas import GeneroCreate, GeneroRead, GeneroUpdate
 from app.modules.generos.service import (
     create_genero,
     get_genero,
     list_generos,
+    list_libros_por_genero,
     update_genero,
 )
+from app.modules.libros.schemas import LibroResumenRead
 
 router = APIRouter(prefix="/generos", tags=["generos"])
 
@@ -25,7 +24,8 @@ router = APIRouter(prefix="/generos", tags=["generos"])
     summary="Crear un género",
 )
 async def crear_genero(
-    genero_in: GeneroCreate, session=Depends(get_session)
+    genero_in: GeneroCreate,
+    session: AsyncSession = Depends(get_session),
 ) -> GeneroRead:
     """Crea un género nuevo.
 
@@ -44,7 +44,7 @@ async def crear_genero(
 async def listar_generos(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> List[GeneroRead]:
     """Lista géneros con paginación.
 
@@ -60,7 +60,8 @@ async def listar_generos(
     summary="Obtener un género por id",
 )
 async def obtener_genero(
-    genero_id: int, session=Depends(get_session)
+    genero_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> GeneroRead:
     """Obtiene un género por su id.
 
@@ -78,7 +79,7 @@ async def obtener_genero(
 async def actualizar_genero(
     genero_id: int,
     genero_in: GeneroUpdate,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> GeneroRead:
     """Actualiza un género aplicando solo los campos enviados (PATCH parcial).
 
@@ -88,3 +89,24 @@ async def actualizar_genero(
     - 422: datos inválidos
     """
     return await update_genero(session, genero_id, genero_in)
+
+
+@router.get(
+    "/{genero_id}/libros",
+    response_model=List[LibroResumenRead],
+    summary="Listar libros de un género",
+)
+async def listar_libros_genero(
+    genero_id: int,
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    session: AsyncSession = Depends(get_session),
+) -> List[LibroResumenRead]:
+    """Lista los libros de un género.
+
+    - 200: lista de libros (puede ser vacía)
+    - 404: el género no existe
+    """
+    return await list_libros_por_genero(
+        session, genero_id, limit=limit, offset=offset
+    )

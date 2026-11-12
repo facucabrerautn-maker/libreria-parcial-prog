@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
-from app.modules.clientes.models import Cliente
 from app.modules.clientes.schemas import (
     ClienteCreate,
     ClienteRead,
@@ -30,7 +30,8 @@ router = APIRouter(prefix="/clientes", tags=["clientes"])
     summary="Crear un cliente",
 )
 async def crear_cliente(
-    cliente_in: ClienteCreate, session=Depends(get_session)
+    cliente_in: ClienteCreate,
+    session: AsyncSession = Depends(get_session),
 ) -> ClienteRead:
     """Crea un cliente nuevo.
 
@@ -47,7 +48,8 @@ async def crear_cliente(
     summary="Obtener un cliente por id con su perfil",
 )
 async def obtener_cliente(
-    cliente_id: int, session=Depends(get_session)
+    cliente_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> ClienteRead:
     """Obtiene un cliente por su id con su perfil (carga anticipada).
 
@@ -65,7 +67,7 @@ async def obtener_cliente(
 async def actualizar_cliente(
     cliente_id: int,
     cliente_in: ClienteUpdate,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> ClienteRead:
     """Actualiza un cliente aplicando solo los campos enviados (PATCH parcial).
 
@@ -86,7 +88,7 @@ async def actualizar_cliente(
 async def crear_perfil(
     cliente_id: int,
     perfil_in: PerfilCreate,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> PerfilRead:
     """Crea un perfil para un cliente (relación uno a uno).
 
@@ -103,14 +105,12 @@ async def crear_perfil(
     summary="Obtener ventas de un cliente",
 )
 async def obtener_ventas_cliente(
-    cliente_id: int, session=Depends(get_session)
+    cliente_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> List[VentaRead]:
     """Obtiene las ventas de un cliente.
 
-    - 200: lista de ventas
+    - 200: lista de ventas (puede ser vacía)
     - 404: cliente no encontrado
     """
-    cliente = await session.get(Cliente, cliente_id)
-    if cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
     return await list_ventas_por_cliente(session, cliente_id)

@@ -2,10 +2,13 @@ from typing import List
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 from fastapi import HTTPException
 
 from app.modules.autores.models import Autor
 from app.modules.autores.schemas import AutorCreate, AutorUpdate, AutorRead
+from app.modules.libros.models import LibroAutor
+from app.modules.libros.schemas import LibroDeAutorRead
 
 
 async def create_autor(session: AsyncSession, autor_in: AutorCreate) -> AutorRead:
@@ -59,3 +62,47 @@ async def update_autor(
     await session.commit()
     await session.refresh(autor)
     return AutorRead.model_validate(autor)
+
+
+async def list_libros_por_autor(
+    session: AsyncSession, autor_id: int, limit: int = 20, offset: int = 0
+) -> List[LibroDeAutorRead]:
+    """Lista los libros de un autor con el rol y el orden de cada autoría.
+
+    404 si el autor no existe. La lectura del libro se precarga con joinedload
+    para no depender de la carga perezosa.
+    """
+    autor = await session.get(Autor, autor_id)
+    if autor is None:
+        raise HTTPException(status_code=404, detail="Autor no encontrado")
+
+    if limit < 1:
+        limit = 1
+    if limit > 100:
+        limit = 100
+    if offset < 0:
+        offset = 0
+
+    result = await session.execute(
+        select(LibroAutor)
+        .options(joinedload(LibroAutor.libro))
+        .where(LibroAutor.autor_id == autor_id)
+        .order_by(LibroAutor.orden)
+        .offset(offset)
+        .limit(limit)
+    )
+    autorias = result.scalars().all()
+
+    return [
+        LibroDeAutorRead(
+            id=autoria.libro.id,
+            isbn=autoria.libro.isbn,
+            titulo=autoria.libro.titulo,
+            precio=autoria.libro.precio,
+            stock=autoria.libro.stock,
+            rol=autoria.rol,
+            orden=autoria.orden,
+        )
+        for autoria in autorias
+        if autoria.libro is not None
+    ]

@@ -27,8 +27,12 @@ class ClienteRead(SQLModel):
 
 
 class PerfilCreate(SQLModel):
-    """DTO de entrada para crear un perfil. No lleva id."""
-    cliente_id: int
+    """DTO de entrada para crear un perfil.
+
+    No lleva id ni cliente_id: el cliente llega por la ruta
+    POST /clientes/{cliente_id}/perfil.
+    """
+
     telefono: Optional[str] = PydanticField(default=None)
     direccion: Optional[str] = PydanticField(default=None)
 

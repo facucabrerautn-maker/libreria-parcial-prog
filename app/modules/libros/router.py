@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
 from app.modules.libros.schemas import LibroCreate, LibroRead, LibroUpdate
@@ -18,12 +19,13 @@ router = APIRouter(prefix="/libros", tags=["libros"])
     "/",
     response_model=LibroRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Crear un libro con autorías",
+    summary="Crear un libro con autores",
 )
 async def crear_libro(
-    libro_in: LibroCreate, session=Depends(get_session)
+    libro_in: LibroCreate,
+    session: AsyncSession = Depends(get_session),
 ) -> LibroRead:
-    """Crea un libro con editorial, género opcional y lista de autorías.
+    """Crea un libro con editorial, género opcional y lista de autores.
 
     - 201: creado exitosamente
     - 409: ISBN duplicado o FK inválida (editorial, género, autor inexistente)
@@ -41,15 +43,23 @@ async def listar_libros(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     titulo: Optional[str] = Query(default=None),
-    session=Depends(get_session),
+    genero_id: Optional[int] = Query(default=None),
+    session: AsyncSession = Depends(get_session),
 ) -> List[LibroRead]:
-    """Lista libros con paginación y filtro opcional por título.
+    """Lista libros con paginación y filtros opcionales.
 
     - `limit`: cantidad de resultados (1 a 100, default 20)
     - `offset`: posición inicial (default 0)
-    - `titulo`: filtro por parte del título (sin distinguir mayúsculas, parámetro ligado)
+    - `titulo`: filtro por parte del título (sin distinguir mayúsculas)
+    - `genero_id`: filtro por género
     """
-    return await list_libros(session, limit=limit, offset=offset, titulo=titulo)
+    return await list_libros(
+        session,
+        limit=limit,
+        offset=offset,
+        titulo=titulo,
+        genero_id=genero_id,
+    )
 
 
 @router.get(
@@ -58,11 +68,12 @@ async def listar_libros(
     summary="Obtener un libro por id",
 )
 async def obtener_libro(
-    libro_id: int, session=Depends(get_session)
+    libro_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> LibroRead:
     """Obtiene un libro por su id con carga anticipada de relaciones.
 
-    - 200: encontrado (con editorial, género y autorías)
+    - 200: encontrado (con editorial, género y autores)
     - 404: no existe
     """
     return await get_libro(session, libro_id)
@@ -76,9 +87,11 @@ async def obtener_libro(
 async def actualizar_libro(
     libro_id: int,
     libro_in: LibroUpdate,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> LibroRead:
     """Actualiza un libro aplicando solo los campos enviados (PATCH parcial).
+
+    Si se envía `autores`, se reemplaza la lista completa de autorías.
 
     - 200: actualizado
     - 404: no existe

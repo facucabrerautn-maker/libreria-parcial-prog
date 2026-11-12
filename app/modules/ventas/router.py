@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
 from app.modules.ventas.schemas import VentaCreate, VentaRead
@@ -18,7 +19,7 @@ router = APIRouter(prefix="/ventas", tags=["ventas"])
 async def crear_venta(
     venta_in: VentaCreate,
     background_tasks: BackgroundTasks,
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> VentaRead:
     """Crea una venta con renglones anidados.
 
@@ -37,7 +38,7 @@ async def crear_venta(
 async def listar_ventas(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    session=Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> List[VentaRead]:
     """Lista ventas con paginación.
 
@@ -53,7 +54,8 @@ async def listar_ventas(
     summary="Obtener una venta por id",
 )
 async def obtener_venta(
-    venta_id: int, session=Depends(get_session)
+    venta_id: int,
+    session: AsyncSession = Depends(get_session),
 ) -> VentaRead:
     """Obtiene una venta por su id con carga anticipada de relaciones.
 
